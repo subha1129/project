@@ -11,9 +11,9 @@ import { ListMasterPage } from '../pages/list-master/list-master';
 import { LoginPage } from '../pages/login/login';
 import { MapPage } from '../pages/map/map';
 import { MenuPage } from '../pages/menu/menu';
+import { HomePage } from '../pages/home/home';
 import { SearchPage } from '../pages/search/search';
 import { SettingsPage } from '../pages/settings/settings';
-import { SignupPage } from '../pages/signup/signup';
 import { TabsPage } from '../pages/tabs/tabs';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
@@ -53,10 +53,10 @@ export class MyApp {
     { title: 'Cards', component: CardsPage },
     { title: 'Content', component: ContentPage },
     { title: 'Login', component: LoginPage },
-    { title: 'Signup', component: SignupPage },
     { title: 'Map', component: MapPage },
     { title: 'Master Detail', component: ListMasterPage },
     { title: 'Menu', component: MenuPage },
+    { title: 'Home', component: HomePage },
     { title: 'Settings', component: SettingsPage },
     { title: 'Search', component: SearchPage }
   ]
