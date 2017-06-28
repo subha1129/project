@@ -17,6 +17,7 @@ import { MenuPage } from '../pages/menu/menu';
 import { HomePage } from '../pages/home/home';
 import { SearchPage } from '../pages/search/search';
 import { SettingsPage } from '../pages/settings/settings';
+import { SignupPage } from '../pages/signup/signup';
 import { TabsPage } from '../pages/tabs/tabs';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
@@ -74,6 +75,7 @@ let pages = [
   HomePage,
   SearchPage,
   SettingsPage,
+  SignupPage,
   TabsPage,
   TutorialPage,
   WelcomePage

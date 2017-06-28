@@ -7,5 +7,10 @@
 </ion-header>
 
 <ion-content padding>
- 
+ <ion-list>
+  <ion-list-header>REORDER Header</ion-list-header>
+  <ion-item-group reorder="true" (ionItemReorder)="$event.applyTo(items)">
+    <ion-item *ngFor="let item of items"><img [src]="item.value"></ion-item>
+  </ion-item-group>
+</ion-list>
 </ion-content>
