@@ -1,68 +1,163 @@
-# The Ionic Super Starter 🎮
+# phpMVCsimple v1.1
+# 
 
-_Note: the Ionic Super Starter requires Ionic CLI 3._
+by Aysad Kozanoglu | email: aysadx@gmail.com | web: http://onweb.pe.hu
 
-<img src="super2.png" width="400" />
+this MVC i created to start to develope a HLSPanel for ffmpeg with nginx
 
-The Ionic Super Starter is a batteries-included starter project for Ionic apps complete with pre-built pages, providers, and best practices for Ionic development.
-
-The goal of the Super Starter is to get you from zero to app store faster than before, with a set of opinions from the Ionic team around page layout, data/user management, and project structure.
-
-The way to use this starter is to pick and choose the various page types you want use, and remove the ones you don't. If you want a blank slate, this starter isn't for you (use the `blank` type instead).
-
-One of the big advances in Ionic was moving from a rigid route-based navigation system to a flexible push/pop navigation system modeled off common native SDKs. We've embraced this pattern to provide a set of reusable pages that can be navigated to anywhere in the app. Take a look at the [Settings page](https://github.com/driftyco/ionic-starter-super/blob/master/src/pages/settings/settings.html#L38) for a cool example of a page navigating to itself to provide a different UI without duplicating code.
-
-## Table of Contents
-
-1. [Getting Started](#getting-started)
-2. [Pages](#pages)
-3. [Providers](#providers)
-4. [i18n](#i18n) (adding languages)
-
-## <a name="getting-started"></a>Getting Started
-
-To test this starter out, install the latest version of the Ionic CLI and run:
-
-```bash
-ionic start mySuperApp super
+### MVC Overview ###
+```
+class
+ |- dbconn.php
+controllers
+ |- pages_controller.php
+views
+ | - pages
+ |   |- error.php
+ |   |- home.php
+ |-layout.php
+index.php
+config.php
+routes.php
 ```
 
-## Pages
+## index.php ##
+```
+<?php
+  require_once('errorhandling.php');
+  require_once('config.php');
+  require_once('class/dbconn.php');
 
-The Super Starter comes with a variety of ready-made pages. These pages help you assemble common building blocks for your app so you can focus on your unique features and branding.
+ 
+$DB = new DBPDO();
 
-The app loads with the `FirstRunPage` set to `TutorialPage` as the default. If the user has already gone through this page once, it will be skipped the next time they load the app.
+  if (isset($_GET['controller']) && isset($_GET['action'])) {
+    $controller = $_GET['controller'];
+    $action     = $_GET['action'];
+  } else {
+    $controller = 'pages';
+    $action     = 'home';
+  }
 
-If the tutorial is skipped but the user hasn't logged in yet, the Welcome page will be displayed which is a "splash" prompting the user to log in or create an account.
+  require_once('views/layout.php');
+?>
+```
+## routes.php ##
+```
+<?php
+  function call($controller, $action) {
+    require_once('controllers/' . $controller . '_controller.php');
+    switch($controller) {
+      case 'pages':
+        $controller = new PagesController();
+      break;
+    }
 
-Once the user is authenticated, the app will load with the `MainPage` which is set to be the `TabsPage` as the default.
+    $controller->{ $action }();
+  }
 
-The entry and main pages can be configured easily by updating the corresponding variables in [src/pages/pages.ts](https://github.com/driftyco/ionic-starter-super/blob/master/src/pages/pages.ts).
+  $controllers = array('pages' => ['home', 'error']);
 
-Please read the [Pages](https://github.com/driftyco/ionic-starter-super/tree/master/src/pages) readme, and the readme for each page in the source for more documentation on each.
+  if (array_key_exists($controller, $controllers)) {
+    if (in_array($action, $controllers[$controller])) {
+      call($controller, $action);
+    } else {
+      call('pages', 'error');
+    }
+  } else {
+    call('pages', 'error');
+  }
+?>
+```
+## layout.php ## 
+html base skelett and require routes.php on body 
 
-## Providers
+## example controller ##
+```
+<?php
+  class PagesController {
+    public function home() {
+      $first_name = 'Aysad';
+      $last_name  = 'Kozanoglu';
+      require_once('views/pages/home.php');
+    }
+    public function error() {
+      require_once('views/pages/error.php');
+    }
+  }
+?> 
+```
 
-The Super Starter comes with some basic implementations of common providers.
+## DB Connection ##
+Örnekler:
+```
+$DB = new DBPDO();
 
-### User
 
-The `User` provider is used to authenticate users through its `login(accountInfo)` and `signup(accountInfo)` methods, which perform `POST` requests to an API endpoint that you will need to configure.
+$DB->execute("UPDATE customers SET email = 'eposta@domain.com' WHERE username = 'xyz123'");
 
-### Api
+$DB->execute("UPDATE customers SET email = ? WHERE username = ?", array('eposta@domain.com', 'xyz123'));
 
-The `Api` provider is a simple CRUD frontend to an API. Simply put the root of your API url in the Api class and call get/post/put/patch/delete 
+$user = $DB->fetch("SELECT * FROM users WHERE id = ?", $id); // $id=1234567890
 
-## i18n
+$users = $DB->fetchAll("SELECT * FROM users");
 
-Ionic Super Starter comes with internationalization (i18n) out of the box with [ngx-translate](https://github.com/ngx-translate/core). This makes it easy to change the text used in the app by modifying only one file. 
+    output:
+    --------
+      [0] => Array
+    (
+        [id] => 1
+        [name] => hasan
+    )
 
-By default, the only language strings provided are American English.
+    [1] => Array
+    (
+        [id] => 2
+        [name] => tasan
+    )
 
-### Adding Languages
+    [2] => Array
+    (
+        [id] => 3
+        [name] => basan
+    )
 
-To add new languages, add new files to the `src/assets/i18n` directory, following the pattern of LANGCODE.json where LANGCODE is the language/locale code (ex: en/gb/de/es/etc.).
 
-### Changing the Language
+$users = $DB->fetchAll("SELECT * FROM users", null, 'name');
 
-To change the language of the app, edit `src/app/app.component.ts` and modify `translate.use('en')` to use the LANGCODE from `src/assets/i18n/`
+    output:
+    -------
+    [hasan] => Array
+    (
+        [id] => 1
+        [name] => hasan
+    )
+
+    [tasan] => Array
+    (
+        [id] => 2
+        [name] => tasan
+    )
+
+    [basan] => Array
+    (
+        [id] => 3
+        [name] => basan
+    )
+// use raw data with if 
+if( isset ( $users[$raw_data['user_name']] ) ) { //Do something }
+
+// last added id 
+
+$DB->lastInsertId();
+```
+#The MIT License (MIT)#
+
+Copyright (c) <2016> <copyright Aysad Kozanoglu>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
